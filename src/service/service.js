@@ -12,12 +12,12 @@ const [userCommand] = userArguments;
 
 if (userArguments.length === 0 || !Cli[userCommand]) {
   Cli[DEFAULT_COMMAND].run();
-  process.exit(ExitCode.success);
+  process.exit(ExitCode.SUCCESS);
 }
 
 if (userArguments[1] > 1000) {
   console.error(`Не больше 1000 объявлений`);
-  process.exit(ExitCode.error);
+  process.exit(ExitCode.ERROR);
 }
 
 Cli[userCommand].run(userArguments.slice(1));
