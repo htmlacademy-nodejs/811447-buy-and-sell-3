@@ -1,5 +1,7 @@
 'use strict';
 
+const chalk = require(`chalk`);
+
 const {Cli} = require(`./cli`);
 const {
   DEFAULT_COMMAND,
@@ -16,7 +18,7 @@ if (userArguments.length === 0 || !Cli[userCommand]) {
 }
 
 if (userArguments[1] > 1000) {
-  console.error(`Не больше 1000 объявлений`);
+  console.error(chalk.red(`Не больше 1000 объявлений`));
   process.exit(ExitCode.ERROR);
 }
 
