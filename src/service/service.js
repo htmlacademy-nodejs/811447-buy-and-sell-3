@@ -17,7 +17,7 @@ if (userArguments.length === 0 || !Cli[userCommand]) {
   process.exit(ExitCode.SUCCESS);
 }
 
-if (userArguments[1] > 1000) {
+if (userCommand === Cli[`generate`] && userArguments[1] > 1000) {
   console.error(chalk.red(`Не больше 1000 объявлений`));
   process.exit(ExitCode.ERROR);
 }
