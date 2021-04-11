@@ -4,9 +4,11 @@ const express = require(`express`);
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 const {HttpCode, ExitCode} = require(`../../constants`);
+const routes = require(`../api`);
 
 const DEFAULT_PORT = 3000;
 const FILENAME = `mocks.json`;
+const API_PREFIX = `/api`;
 
 const app = express();
 app.use(express.json());
@@ -19,9 +21,10 @@ app.get(`/offers`, async (req, res) => {
 
   } catch (err) {
     res.json([]);
-    res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err);
   }
 });
+
+app.use(API_PREFIX, routes);
 
 app.use((req, res) => res
   .status(HttpCode.NOT_FOUND)
