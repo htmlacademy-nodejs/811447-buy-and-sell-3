@@ -13,7 +13,7 @@ module.exports = (app, offerService, commentService) => {
 
   route.get(`/`, async (req, res) => {
     const result = await offerService.findAll();
-    res.status(HttpCode.OK).json(result);
+    return res.status(HttpCode.OK).json(result);
   });
 
   route.get(`/:offerId`, async (req, res) => {
@@ -29,7 +29,6 @@ module.exports = (app, offerService, commentService) => {
 
   route.post(`/`, offerValidator, async (req, res) => {
     const offer = await offerService.create(req.body);
-
     return res.status(HttpCode.CREATED).json(offer);
   });
 
