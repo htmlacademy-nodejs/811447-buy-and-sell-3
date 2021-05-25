@@ -16,5 +16,8 @@ module.exports.shuffle = (someArray) => {
 };
 
 module.exports.getPictureFileName = (number) => {
-  return `item${number}.jpg`;
+  const numberFormatted = new Intl.NumberFormat(`ru-RU`, {
+    minimumIntegerDigits: 2
+  }).format(number);
+  return `item${numberFormatted}`;
 };
