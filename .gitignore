@@ -19,3 +19,6 @@ mocks.json
 
 # Логи
 src/service/logs
+
+# Загруженные файлы
+src/express/upload
