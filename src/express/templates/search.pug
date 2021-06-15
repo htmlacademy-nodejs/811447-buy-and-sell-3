@@ -6,40 +6,25 @@ block content
       h1.visually-hidden Результаты поиска
       div(class='search-results__wrapper')
         p(class='search-results__label') Найдено
-          span.js-results 2 публикации
+          span.js-results  #{results.length} публикаций
         ul(class='search-results__list')
-          li(class='search-results__item')
-            .ticket-card.ticket-card--color05
-              div(class='ticket-card__img')
-                img(src='/img/item05.jpg' srcset='/img/item05@2x.jpg 2x' alt='Изображение товара')
-              div(class='ticket-card__info')
-                span(class='ticket-card__label') ПРОДАМ
-                div(class='ticket-card__categories')
-                  a(href='#') Авто
-                div(class='ticket-card__header')
-                  h3(class='ticket-card__title')
-                    a(href='#') Ленд Ровер
-                  p(class='ticket-card__price')
-                    span.js-sum 900 000
-                    | ₽
-                div(class='ticket-card__desc')
-                  p Куплю монстеру зеленую в хорошем зеленом состоянии, буду поливать...
-          li(class='search-results__item')
-            .ticket-card.ticket-card--color16
-              div(class='ticket-card__img')
-                img(src='/img/item16.jpg' srcset='/img/item16@2x.jpg 2x' alt='Изображение товара')
-              div(class='ticket-card__info')
-                span(class='ticket-card__label') ПРОДАМ
-                div(class='ticket-card__categories')
-                  a(href='#') Авто
-                div(class='ticket-card__header')
-                  h3(class='ticket-card__title')
-                    a(href='#') Хонда
-                  p(class='ticket-card__price')
-                    span.js-sum 100 000
-                    | ₽
-                div(class='ticket-card__desc')
-                  p Куплю монстеру зеленую в хорошем зеленом состоянии, буду поливать...
+          each result in results
+            li.search-results__item
+              .ticket-card.ticket-card--color05
+                .ticket-card__img
+                  img(src=`/img/${result.picture}.jpg` alt=result.title)
+                .ticket-card__info
+                  span.ticket-card__label #{result.type === `offer` ? `Куплю` : `Продам`}
+                  .ticket-card__categories
+                    each category in result.category
+                      a(href="#") #{category}
+                  .ticket-card__header
+                    h3.ticket-card__title
+                      a(href="#") #{result.title}
+                    p.ticket-card__price
+                      span.js-sum #{result.sum}₽
+                  .ticket-card__desc
+                    p #{result.description}
     section.tickets-list
       h2.visually-hidden Самые новые предложения
       div(class='tickets-list__wrapper')
