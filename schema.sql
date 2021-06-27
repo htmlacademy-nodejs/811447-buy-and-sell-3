@@ -1,6 +1,12 @@
 CREATE TABLE categories(
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  image varchar(50),
   name varchar(255) NOT NULL
+);
+
+CREATE TABLE types(
+  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name varchar(5) NOT NULL
 );
 
 CREATE TABLE users(
@@ -17,10 +23,11 @@ CREATE TABLE offers(
   title varchar(255) NOT NULL,
   description text NOT NULL,
   sum integer NOT NULL,
-  type varchar(5) NOT NULL,
   picture varchar(50),
+  type_id integer NOT NULL,
   user_id integer NOT NULL,
   created_at timestamp DEFAULT current_timestamp,
+  FOREIGN KEY (type_id) REFERENCES types(id),
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
