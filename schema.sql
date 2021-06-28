@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS offer_categories;
+DROP TABLE IF EXISTS offers;
+DROP TABLE IF EXISTS types;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE categories(
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   image varchar(50),
