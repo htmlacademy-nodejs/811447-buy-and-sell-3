@@ -5,6 +5,7 @@ const fs = require(`fs`).promises;
 const {HttpCode, ExitCode} = require(`../../constants`);
 const routes = require(`../api`);
 const {getLogger} = require(`../lib/logger`);
+const sequelize = require(`../lib/sequelize`);
 
 const DEFAULT_PORT = 3000;
 const FILENAME = `mocks.json`;
@@ -49,7 +50,7 @@ app.use((err, _req, _res, _next) => {
 
 module.exports = {
   name: `--server`,
-  run(args) {
+  async run(args) {
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
@@ -62,9 +63,12 @@ module.exports = {
         return logger.info(`Listening to connections on ${port}`);
       });
 
+      logger.info(`Trying to connect to database...`);
+      await sequelize.authenticate();
     } catch (err) {
       logger.error(`An error occured: ${err.message}`);
       process.exit(ExitCode.ERROR);
     }
+    logger.info(`Connection to database established`);
   }
 };
