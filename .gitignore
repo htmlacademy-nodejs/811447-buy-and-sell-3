@@ -22,3 +22,6 @@ src/service/logs
 
 # Загруженные файлы
 src/express/upload
+
+# Файл с переменными окружения
+.env
