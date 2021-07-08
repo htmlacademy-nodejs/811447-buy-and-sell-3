@@ -1,8 +1,9 @@
 "use strict";
 
 const axios = require(`axios`);
-const TIMEOUT = 1000;
+const {HttpMethod} = require(`../constants`);
 
+const TIMEOUT = 1000;
 const port = process.env.API_PORT || 3000;
 const defaultUrl = `http://localhost:${port}/api/`;
 
@@ -19,8 +20,8 @@ class API {
     return response.data;
   }
 
-  getOffers() {
-    return this._load(`/offers`);
+  getOffers({comments}) {
+    return this._load(`/offers`, {params: {comments}});
   }
 
   getOffer(id) {
@@ -31,13 +32,27 @@ class API {
     return this._load(`/search`, {params: {query}});
   }
 
-  async getCategories() {
-    return this._load(`/categories`);
+  getCategories(count) {
+    return this._load(`/categories`, {params: {count}});
   }
 
-  async createOffer(data) {
+  createOffer(data) {
     return this._load(`/offers`, {
-      method: `POST`,
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
+  editOffer(id, data) {
+    return this._load(`/offers/${id}`, {
+      method: HttpMethod.PUT,
+      data
+    });
+  }
+
+  createComment(id, data) {
+    return this._load(`/offers/${id}/comments`, {
+      method: HttpMethod.POST,
       data
     });
   }

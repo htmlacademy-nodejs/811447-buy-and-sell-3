@@ -12,8 +12,9 @@ module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const result = await offerService.findAll();
-    return res.status(HttpCode.OK).json(result);
+    const {comments} = req.query;
+    let offers = await offerService.findAll(comments);
+    return res.status(HttpCode.OK).json(offers);
   });
 
   route.get(`/:offerId`, async (req, res) => {

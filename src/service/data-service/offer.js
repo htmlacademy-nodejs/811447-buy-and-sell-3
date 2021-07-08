@@ -1,43 +1,56 @@
 'use strict';
-
-const {nanoid} = require(`nanoid`);
-const {MAX_ID_LENGTH} = require(`../../constants`);
+const Aliase = require(`../models/aliase`);
 
 class OfferService {
-  constructor(offers) {
-    this._offers = offers;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.Offer;
+    this._Comment = sequelize.models.Comment;
+    this._Category = sequelize.models.Category;
+    this._Type = sequelize.models.Type;
   }
 
-  create(offer) {
-    const newOffer = Object.assign({id: nanoid(MAX_ID_LENGTH), comments: []}, offer);
-
-    this._offers.push(newOffer);
-    return newOffer;
+  async create(offerData) {
+    const offer = await this._Offer.create(offerData);
+    await offer.addCategories(offerData.categories);
+    return offer.get();
   }
 
-  drop(id) {
-    const offer = this._offers.find((item) => item.id === id);
+  async drop(id) {
+    const deletedRows = await this._Offer.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
+  }
 
-    if (!offer) {
-      return null;
+  async findAll(needComments) {
+    const include = [Aliase.CATEGORIES, Aliase.TYPE];
+
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
     }
-
-    this._offers = this._offers.filter((item) => item.id !== id);
-    return offer;
-  }
-
-  findAll() {
-    return this._offers;
+    const offers = await this._Offer.findAll({
+      attributes: [
+        `id`,
+        `title`,
+        `description`,
+        `sum`,
+        `picture`,
+        `createdAt`
+      ],
+      include
+    });
+    return offers.map((item) => item.get());
   }
 
   findOne(id) {
-    return this._offers.find((item) => item.id === id);
+    return this._Offer.findByPk(id, {include: [Aliase.CATEGORIES, Aliase.TYPE, Aliase.COMMENTS]});
   }
 
-  update(id, offer) {
-    const oldOffer = this._offers.find((item) => item.id === id);
-
-    return oldOffer ? Object.assign(oldOffer, offer) : null;
+  async update(id, offer) {
+    const [affectedRows] = await this._Offer.update(offer, {
+      where: {id}
+    });
+    return !!affectedRows;
   }
 
 }

@@ -14,12 +14,12 @@ block content
             li(class='tickets-list__item')
               div(class=`ticket-card ticket-card--color${('0' + (index + 1)).slice(-2)}`)
                 div(class='ticket-card__img')
-                  img(src=`/img/${offer.picture}.jpg` srcset=`/img/${offer.picture}@2x.jpg 2x` alt=offer.title)
+                  img(src=`/img/${offer.picture}` alt=offer.title)
                 div(class='ticket-card__info')
-                  +ticketLabel(offer.type)
+                  +ticketLabel(offer.type.name)
                   div(class='ticket-card__categories')
-                    each category in offer.category
-                      a(href="#") #{category}
+                    each category in offer.categories
+                      a(href="#") #{category.name}
                   div(class='ticket-card__header')
                     h3(class='ticket-card__title')
                       a(href=`offers/${offer.id}`) #{offer.title}

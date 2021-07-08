@@ -10,7 +10,8 @@
     "server": "cross-env NODE_ENV=development nodemon -r dotenv/config ./src/service/service.js --server",
     "start-front-server": "node ./src/express/index.js",
     "test": "npm run eslint && npm run test::rest",
-    "test::rest": "jest"
+    "test::rest": "jest",
+    "filldb": "cross-env NODE_ENV=development node -r dotenv/config ./src/service/service.js --filldb"
   },
   "repository": {
     "type": "git",

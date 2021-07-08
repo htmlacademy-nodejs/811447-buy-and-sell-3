@@ -9,7 +9,7 @@ block content
           form(class='ticket-form__form form' action='#' method='post' enctype='multipart/form-data' autocomplete='off')
             div(class='ticket-form__avatar-container js-preview-container uploaded')
               div(class='ticket-form__avatar js-preview')
-                img(src=`/img/${offer.picture}.jpg` srcset=`/img/${offer.picture}.jpg 2x` alt='')
+                img(src=`/img/${offer.picture}` alt=offer.title)
               div(class='ticket-form__field-avatar')
                 input#avatar.visually-hidden.js-file-field(type='file' name='avatar')
                 label(for='avatar')
@@ -30,17 +30,17 @@ block content
               div(class='ticket-form__row')
                 select#category-field(name='category' data-label='Выбрать категорию публикации' class='form__select js-multiple-select' multiple='')
                   each category in categories
-                    option(value=index selected=offer.category.includes(category)) #{category}
+                    option(value=index selected=offer.categories.some(item => item.id === category.id)) #{category.name}
               div(class='ticket-form__row')
                 div(class='form__field form__field--price')
-                  input#price-field.js-field.js-price(type='number' name='price' min='1' value=offer.price required='')
+                  input#price-field.js-field.js-price(type='number' name='price' min='1' value=offer.sum required='')
                   label(for='price-field') Цена
                   span Обязательное поле
                 div(class='form__switch switch')
                   div(class='switch__item')
-                    input#buy-field.visually-hidden(type='radio' name='action' value='buy' checked=(offer.type === 'offer'))
+                    input#buy-field.visually-hidden(type='radio' name='action' value='buy' checked=(offer.type.name === 'offer'))
                     label(for='buy-field' class='switch__button') Куплю
                   div(class='switch__item')
-                    input#sell-field.visually-hidden(type='radio' name='action' value='sell' checked=(offer.type === 'sale'))
+                    input#sell-field.visually-hidden(type='radio' name='action' value='sell' checked=(offer.type.name === 'sale'))
                     label(for='sell-field' class='switch__button') Продам
             button(class='form__button btn btn--medium js-button' type='submit') Сохранить

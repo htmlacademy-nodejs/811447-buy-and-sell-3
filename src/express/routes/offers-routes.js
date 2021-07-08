@@ -20,8 +20,15 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-offersRouter.get(`/category/:id`, (req, res) => res.render(`offers/category`));
-offersRouter.get(`/add`, (req, res) => res.render(`offers/ticket-add`));
+offersRouter.get(`/category/:id`, async (req, res) => {
+  const categories = await api.getCategories();
+  res.render(`offers/category`, {categories});
+});
+
+offersRouter.get(`/add`, async (req, res) => {
+  const categories = await api.getCategories();
+  res.render(`offers/ticket-add`, {categories});
+});
 
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
   const {body, file} = req;
@@ -50,6 +57,10 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   res.render(`offers/ticket-edit`, {offer, categories});
 });
 
-offersRouter.get(`/:id`, (req, res) => res.render(`offers/ticket`));
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const offer = await api.getOffer(id, true);
+  res.render(`offers/ticket`, {offer});
+});
 
 module.exports = offersRouter;
