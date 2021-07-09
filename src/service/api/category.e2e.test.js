@@ -2,82 +2,108 @@
 
 const express = require(`express`);
 const request = require(`supertest`);
+const Sequelize = require(`sequelize`);
 
 const category = require(`./category`);
 const DataService = require(`../data-service/category`);
+const initDB = require(`../lib/init-db`);
 const {HttpCode} = require(`../../constants`);
 
-const mockData = [
+const mockCategories = [
+  `Животные`,
+  `Журналы`,
+  `Игры`
+];
+
+const mockTypes = [`offer`, `sale`];
+
+const mockUsers = [
   {
-    "id": `KMuPzP`,
-    "type": `offer`,
+    name: `Иван Иванов`,
+    email: `ivanov@example.com`,
+    passwordHash: `ivanov`,
+    avatar: `avatar01.jpg`
+  },
+  {
+    name: `Пётр Петров`,
+    email: `petrov@example.com`,
+    passwordHash: `petrov`,
+    avatar: `avatar02.jpg`
+  }
+];
+
+const mockOffers = [
+  {
+    "typeId": 1,
     "title": `Куплю породистого кота`,
     "description": `Если найдёте дешевле — сброшу цену. Даю недельную гарантию. Мой дед не мог её сломать.\`, Кому нужен этот новый телефон, если тут такое...`,
     "sum": 40245,
     "picture": `item12.jpg`,
-    "category": [`Животные`],
+    "categories": [`Животные`],
     "comments": [
-      {"id": `ZPKYFX`, "offerId": `KMuPzP`, "text": `Совсем немного... Вы что?! В магазине дешевле. А сколько игр в комплекте?`},
-      {"id": `QqIUlz`, "offerId": `KMuPzP`, "text": `Вы что?! В магазине дешевле.`},
-      {"id": `FxUfWn`, "offerId": `KMuPzP`, "text": `Совсем немного... Вы что?! В магазине дешевле.`},
-      {"id": `SmeUFI`, "offerId": `KMuPzP`, "text": `С чем связана продажа? Почему так дешёво? Продаю в связи с переездом. Отрываю от сердца. Совсем немного...`}
+      {"text": `Совсем немного... Вы что?! В магазине дешевле. А сколько игр в комплекте?`, "user": `petrov@example.com`},
+      {"text": `Вы что?! В магазине дешевле.`, "user": `petrov@example.com`},
+      {"text": `Совсем немного... Вы что?! В магазине дешевле.`, "user": `petrov@example.com`},
+      {"text": `С чем связана продажа? Почему так дешёво? Продаю в связи с переездом. Отрываю от сердца. Совсем немного...`, "user": `petrov@example.com`}
     ]
   },
   {
-    "id": `1e6rsz`,
-    "type": `sale`,
+    "typeId": 2,
     "title": `Куплю детские санки`,
     "description": `Даю недельную гарантию. Бонусом отдам все аксессуары. Не пытайтесь торговаться. Цену вещам я знаю. Две страницы заляпаны свежим кофе.`,
     "sum": 40536,
     "picture": `item11.jpg`,
-    "category": [`Игры`],
+    "categories": [`Игры`],
     "comments": [
-      {"id": `spcwHC`, "offerId": `1e6rsz`, "text": `Оплата наличными или перевод на карту?`},
-      {"id": `b4x6mz`, "offerId": `1e6rsz`, "text": `С чем связана продажа? Почему так дешёво? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`}
+      {"text": `Оплата наличными или перевод на карту?`, "user": `petrov@example.com`},
+      {"text": `С чем связана продажа? Почему так дешёво? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`, "user": `petrov@example.com`}
     ]
   },
   {
-    "id": `UcU0Fi`,
-    "type": `sale`,
+    "typeId": 1,
     "title": `Куплю детские санки`,
     "description": `Две страницы заляпаны свежим кофе. Если найдёте дешевле — сброшу цену. Таких предложений больше нет! Бонусом отдам все аксессуары.`,
     "sum": 55539,
     "picture": `item11.jpg`,
-    "category": [`Разное`],
+    "categories": [`Игры`],
     "comments": [
-      {"id": `g6IzF6`, "offerId": `UcU0Fi`, "text": `Почему в таком ужасном состоянии? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`}
+      {"text": `Почему в таком ужасном состоянии? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`, "user": `petrov@example.com`}
     ]
   },
   {
-    "id": `lngpH6`,
-    "type": `offer`,
+    "typeId": 2,
     "title": `Продам коллекцию журналов «Огонёк»`,
     "description": `Не пытайтесь торговаться. Цену вещам я знаю. Это настоящая находка для коллекционера! Кому нужен этот новый телефон, если тут такое... Таких предложений больше нет!`,
     "sum": 45253,
     "picture": `item2.jpg`,
-    "category": [`Книги`],
+    "categories": [`Животные`],
     "comments": [
-      {"id": `47uTlq`, "offerId": `lngpH6`, "text": `С чем связана продажа? Почему так дешёво? Оплата наличными или перевод на карту?`}
+      {"text": `С чем связана продажа? Почему так дешёво? Оплата наличными или перевод на карту?`, "user": `petrov@example.com`}
     ]
   },
   {
-    "id": `fjSOzE`,
-    "type": `sale`,
+    "typeId": 1,
     "title": `Продам отличную подборку фильмов на VHS`,
     "description": `Две страницы заляпаны свежим кофе. Если найдёте дешевле — сброшу цену. Даю недельную гарантию. Кому нужен этот новый телефон, если тут такое...`,
     "sum": 82467,
     "picture": `item11.jpg`,
-    "category": [`Посуда`],
+    "categories": [`Животные`],
     "comments": [
-      {"id": `eTmK5g`, "offerId": `fjSOzE`, "text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`},
-      {"id": `ceeLlj`, "offerId": `fjSOzE`, "text": `Неплохо, но дорого. А сколько игр в комплекте? Продаю в связи с переездом. Отрываю от сердца.`}
+      {"text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`, "user": `petrov@example.com`},
+      {"text": `Неплохо, но дорого. А сколько игр в комплекте? Продаю в связи с переездом. Отрываю от сердца.`, "user": `petrov@example.com`}
     ]
   }
 ];
 
+const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
+
 const app = express();
 app.use(express.json());
-category(app, new DataService(mockData));
+
+beforeAll(async () => {
+  await initDB(mockDB, {categories: mockCategories, offers: mockOffers, types: mockTypes, users: mockUsers});
+  category(app, new DataService(mockDB));
+});
 
 describe(`API returns category list`, () => {
 
@@ -89,11 +115,11 @@ describe(`API returns category list`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
-  test(`Returns list of 3 categories`, () => expect(response.body.length).toBe(5));
+  test(`Returns list of 3 categories`, () => expect(response.body.length).toBe(3));
 
-  test(`Category names are "Животные", "Игры", "Разное", "Книги", "Посуда"`,
+  test(`Category names are "Животные", "Игры", "Журналы"`,
       () => expect(response.body).toEqual(
-          expect.arrayContaining([`Животные`, `Игры`, `Разное`, `Книги`, `Посуда`])
+          expect.arrayContaining([{"id": 1, "image": `cat01.jpg`, "name": `Животные`}, {"id": 2, "image": `cat02.jpg`, "name": `Журналы`}, {"id": 3, "image": `cat03.jpg`, "name": `Игры`}])
       )
   );
 

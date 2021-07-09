@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 const multer = require(`multer`);
 const path = require(`path`);
 const {nanoid} = require(`nanoid`);
+const {ensureArray} = require(`../../utils`);
 const api = require(`../api`).getAPI();
 
 const offersRouter = new Router();
@@ -33,12 +34,12 @@ offersRouter.get(`/add`, async (req, res) => {
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
   const {body, file} = req;
   const offerData = {
-    picture: file.filename,
+    picture: file ? file.filename : ``,
     sum: body.price,
-    type: body.action,
+    typeId: Number(body.action),
     description: body.comment,
     title: body[`ticket-name`],
-    category: body.category
+    categories: ensureArray(body.categories)
   };
   try {
     await api.createOffer(offerData);
@@ -56,6 +57,27 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   ]);
   res.render(`offers/ticket-edit`, {offer, categories});
 });
+
+offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const {id} = req.params;
+  const offerData = {
+    picture: file ? file.filename : body[`old-image`],
+    sum: body.price,
+    typeId: Number(body.action),
+    description: body.comment,
+    title: body[`ticket-name`],
+    categories: ensureArray(body.categories),
+    userId: 1
+  };
+  try {
+    await api.editOffer(id, offerData);
+    res.redirect(`/my`);
+  } catch (error) {
+    res.redirect(`/offers/edit/${id}`);
+  }
+});
+
 
 offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;

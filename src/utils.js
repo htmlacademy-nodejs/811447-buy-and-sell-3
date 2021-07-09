@@ -28,3 +28,5 @@ module.exports.getCategoryImageName = (number) => {
   }).format(number);
   return `cat${numberFormatted}.jpg`;
 };
+
+module.exports.ensureArray = (value) => Array.isArray(value) ? value : [value];

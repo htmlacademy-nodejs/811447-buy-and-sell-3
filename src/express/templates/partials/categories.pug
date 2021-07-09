@@ -3,7 +3,7 @@ section.categories-list
   ul(class='categories-list__wrapper')
     each category in categories
       li.categories-list__item
-        a.category-tile.category-tile--default(href="#")
+        a.category-tile.category-tile--default(href=`/offers/category/${category.id}`)
           span.category-tile__image
             img(src=`/img/${category.image}` alt=category.name)
           span.category-tile__label #{category.name}

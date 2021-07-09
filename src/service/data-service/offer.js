@@ -11,7 +11,7 @@ class OfferService {
 
   async create(offerData) {
     const offer = await this._Offer.create(offerData);
-    await offer.addCategories(offerData.categories);
+    await offer.addCategories(offerData.categories.map((category) => Number(category)));
     return offer.get();
   }
 
@@ -50,6 +50,7 @@ class OfferService {
     const [affectedRows] = await this._Offer.update(offer, {
       where: {id}
     });
+
     return !!affectedRows;
   }
 
