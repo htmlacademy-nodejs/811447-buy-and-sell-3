@@ -19,5 +19,14 @@ module.exports.getPictureFileName = (number) => {
   const numberFormatted = new Intl.NumberFormat(`ru-RU`, {
     minimumIntegerDigits: 2
   }).format(number);
-  return `item${numberFormatted}`;
+  return `item${numberFormatted}.jpg`;
 };
+
+module.exports.getCategoryImageName = (number) => {
+  const numberFormatted = new Intl.NumberFormat(`ru-RU`, {
+    minimumIntegerDigits: 2
+  }).format(number);
+  return `cat${numberFormatted}.jpg`;
+};
+
+module.exports.ensureArray = (value) => Array.isArray(value) ? value : [value];

@@ -26,11 +26,9 @@ block content
                   label(for='comment-field') Описание
                   span Обязательное поле
               div(class='ticket-form__row')
-                select#category-field(name='category' data-label='Выбрать категорию публикации' class='form__select js-multiple-select')
-                  option(value='1') Дом
-                  option(value='2') Спорт и отдых
-                  option(value='3') Авто
-                  option(value='4') Электроника
+                select#category-field(name='categories' data-label='Выбрать категорию публикации' class='form__select js-multiple-select')
+                  each category in categories
+                    option(value=category.id) #{category.name}
               div(class='ticket-form__row')
                 div(class='form__field form__field--price')
                   input#price-field.js-field.js-price(type='number' name='price' min='1' required='')
@@ -38,9 +36,9 @@ block content
                   span Обязательное поле
                 div(class='form__switch switch')
                   div(class='switch__item')
-                    input#buy-field.visually-hidden(type='radio' name='action' value='buy')
+                    input#buy-field.visually-hidden(type='radio' name='action' value=(1))
                     label(for='buy-field' class='switch__button') Куплю
                   div(class='switch__item')
-                    input#sell-field.visually-hidden(type='radio' name='action' value='sell')
+                    input#sell-field.visually-hidden(type='radio' name='action' value=(2))
                     label(for='sell-field' class='switch__button') Продам
             button(class='form__button btn btn--medium js-button' type='submit' disabled='') Опубликовать

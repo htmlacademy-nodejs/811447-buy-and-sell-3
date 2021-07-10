@@ -6,10 +6,11 @@ block content
       div(class='ticket-form__wrapper')
         h1(class='ticket-form__title') Редактировать публикацию
         div(class='ticket-form__tile')
-          form(class='ticket-form__form form' action='#' method='post' enctype='multipart/form-data' autocomplete='off')
+          form(class='ticket-form__form form' action=`/offers/edit/${offer.id}` method='post' enctype='multipart/form-data' autocomplete='off')
             div(class='ticket-form__avatar-container js-preview-container uploaded')
               div(class='ticket-form__avatar js-preview')
-                img(src=`/img/${offer.picture}.jpg` srcset=`/img/${offer.picture}.jpg 2x` alt='')
+                img(src=`/img/${offer.picture}` alt=offer.title)
+              input(type="hidden" name="old-image" value=offer.picture)
               div(class='ticket-form__field-avatar')
                 input#avatar.visually-hidden.js-file-field(type='file' name='avatar')
                 label(for='avatar')
@@ -28,19 +29,19 @@ block content
                   label(for='comment-field') Описание
                   span Обязательное поле
               div(class='ticket-form__row')
-                select#category-field(name='category' data-label='Выбрать категорию публикации' class='form__select js-multiple-select' multiple='')
+                select#category-field(name='categories' data-label='Выбрать категорию публикации' class='form__select js-multiple-select' multiple='')
                   each category in categories
-                    option(value=index selected=offer.category.includes(category)) #{category}
+                    option(value=index selected=offer.categories.some(item => item.id === category.id)) #{category.name}
               div(class='ticket-form__row')
                 div(class='form__field form__field--price')
-                  input#price-field.js-field.js-price(type='number' name='price' min='1' value=offer.price required='')
+                  input#price-field.js-field.js-price(type='number' name='price' min='1' value=offer.sum required='')
                   label(for='price-field') Цена
                   span Обязательное поле
                 div(class='form__switch switch')
                   div(class='switch__item')
-                    input#buy-field.visually-hidden(type='radio' name='action' value='buy' checked=(offer.type === 'offer'))
+                    input#buy-field.visually-hidden(type='radio' name='action' value=(1) checked=(offer.type.name === 'offer'))
                     label(for='buy-field' class='switch__button') Куплю
                   div(class='switch__item')
-                    input#sell-field.visually-hidden(type='radio' name='action' value='sell' checked=(offer.type === 'sale'))
+                    input#sell-field.visually-hidden(type='radio' name='action' value=(2) checked=(offer.type.name === 'sale'))
                     label(for='sell-field' class='switch__button') Продам
             button(class='form__button btn btn--medium js-button' type='submit') Сохранить

@@ -1,26 +1,31 @@
 extends ../layout.pug
 
 block content
+  -
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    }
   main.page-content
     section.ticket
       div(class='ticket__wrapper')
         h1.visually-hidden Карточка объявления
         div(class='ticket__content')
           div(class='ticket__img')
-            img(src='/img/ticket.jpg' srcset='/img/ticket@2x.jpg 2x' alt='Изображение товара')
+            img(src=`/img/${offer.picture}` alt=offer.title)
           div(class='ticket__info')
-            h2(class='ticket__title') Мое старое кресло
+            h2(class='ticket__title') #{offer.title}
             div(class='ticket__header')
               p(class='ticket__price')
-                span.js-sum 4000
+                span.js-sum #{offer.sum}
                 | ₽
-              p(class='ticket__action') ПРОДАМ
+              p.ticket__action #{offer.type.name === `offer` ? `КУПЛЮ` : `ПРОДАМ`}
             div(class='ticket__desc')
-              p Продам свое старое кресло, чтобы сидеть и читать книги зимними вечерами. Ножки мягкие, мой пол не царапают. Кресло почти новое &ndash; продаю, т.к. надоел серый цвет. Можно, конечно, накинуть плед и спасти ситуацию, но я все-таки хочу просто другое кресло. В общем оно на самом деле удобное и с ним все хорошо, просто нам пора расстаться.
+              p #{offer.description}
             div(class='ticket__data')
               p
                 b Дата добавления:
-                span 20 ноября 2019
+                span #{formatDate(offer.createdAt)}
               p
                 b Автор:
                 a(href='#') Денис Шкатулкин
@@ -28,18 +33,15 @@ block content
                 b Контакты:
                 a(href='mailto:shkatulkin@ya.ru') shkatulkin@ya.ru
             ul(class='ticket__tags')
-              li
-                a.category-tile.category-tile--small(href='#')
-                  span(class='category-tile__image')
-                    img(src='/img/cat.jpg' srcset='/img/cat@2x.jpg 2x' alt='Иконка категории')
-                  span(class='category-tile__label') Дом
-              li
-                a.category-tile.category-tile--small(href='#')
-                  span(class='category-tile__image')
-                    img(src='/img/cat04.jpg' srcset='/img/cat04@2x.jpg 2x' alt='Иконка категории')
-                  span(class='category-tile__label') Спорт и отдых
+              each category in offer.categories
+                li
+                  a.category-tile.category-tile--small(href="#")
+                    span.category-tile__image
+                      img(src=`/img/${category.image}` alt=category.name)
+                    span.category-tile__label #{category.name}
+
         div(class='ticket__comments')
-          h2(class='ticket__subtitle') Коментарии
+          h2(class='ticket__subtitle') Комментарии
           div(class='ticket__comment-form')
             form.form.comment-form(action='#' method='post')
               div(class='comment-form__header')
@@ -54,21 +56,12 @@ block content
               button(class='comment-form__button btn btn--white js-button' type='submit' disabled='') Отправить
           div(class='ticket__comments-list')
             ul.comments-list
-              li
-                .comment-card
-                  div(class='comment-card__header')
-                    a(href='#' class='comment-card__avatar avatar')
-                      img(src='/img/avatar02.jpg' srcset='/img/avatar02@2x.jpg 2x' alt='Аватар пользователя')
-                    p(class='comment-card__author') Георгий Шпиц
-                  div(class='comment-card__content')
-                    p Что это за рухлядь? Стыдно такое даже фотографировать, не то, что&nbsp;продавать.
-              li
-                .comment-card
-                  div(class='comment-card__header')
-                    a(href='#' class='comment-card__avatar avatar')
-                      img(src='/img/avatar03.jpg' srcset='/img/avatar03@2x.jpg 2x' alt='Аватар пользователя')
-                    p(class='comment-card__author') Александр Бурый
-                  div(class='comment-card__content')
-                    p А можете доставить мне домой? Готов доплатить 300 сверху.
-                      br
-                      | Живу в центре прямо рядом с Моховой улицей. Готов купить прямо сейчас. Мой телефон 9032594748
+              each comment in offer.comments
+                li
+                  .comment-card
+                    .comment-card__header
+                      a.comment-card__avatar.avatar(href="#")
+                        img(src="/img/avatar02.jpg" srcset="/img/avatar02@2x.jpg 2x" alt="Аватар пользователя")
+                      p.comment-card__author Георгий Шпиц
+                    .comment-card__content
+                      p #{comment.text}
