@@ -10,6 +10,44 @@ body
   mixin ticketLabel(type)
     span(class!=attributes.class || `ticket-card__label`) #{type === `offer` ? `Куплю` : `Продам`}
 
+  mixin pagination(page, totalPages, width, prefix)
+    -
+      // вычислим начальную и конечную страницу диапазона без учёта ограничений
+      let start = page - width;
+      let end = page + width;
+
+      // передвинем диапазон вправо, если он начинается с номера меньше единицы
+      if(start < 1){
+        end += 1 - start;
+        start = 1;
+      }
+      // передвинем диапазон влево, если он заканчивается номером больше количества страниц
+      if(end > totalPages){
+        start -= end - totalPages;
+        end = totalPages;
+      }
+
+      // если мы оказались в этой ветке, значит, всего страниц слишком мало. делаем начало диапазона 1
+      if(start < 1){
+        start = 1;
+      }
+      let i = start - 1
+
+    .tickets-list__pagination
+      ul.pagination
+        if start > 1
+          li
+            a(href=`${prefix}page=${page - 1}`) Назад
+        while i++ < end
+          li
+            a(class={active: i === page} href=`${prefix}page=${i}`)= i
+        if end < totalPages
+          li
+            a(href=`${prefix}page=${page + 1}`) Вперёд
+  style.
+    a.active{
+      pointer-events: none;
+    }
   include partials/header.pug
   block content
   include partials/footer.pug

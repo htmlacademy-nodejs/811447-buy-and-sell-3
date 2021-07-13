@@ -3,6 +3,8 @@
 const defineModels = require(`../models`);
 const Aliase = require(`../models/aliase`);
 const {getCategoryImageName} = require(`../../utils`);
+const {getLogger} = require(`../lib/logger`);
+const logger = getLogger({name: `generate`});
 
 module.exports = async (sequelize, {categories, offers, types, users}) => {
   const {Category, Offer, Type, User} = defineModels(sequelize);
@@ -44,5 +46,9 @@ module.exports = async (sequelize, {categories, offers, types, users}) => {
     );
   });
 
-  await Promise.all(offerPromises);
+  try {
+    await Promise.all(offerPromises);
+  } catch (error) {
+    logger.error(error);
+  }
 };
