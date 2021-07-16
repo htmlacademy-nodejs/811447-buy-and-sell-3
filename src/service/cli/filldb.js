@@ -13,13 +13,10 @@ const {
 } = require(`../../utils`);
 
 const DEFAULT_COUNT = 10;
-// const FILE_NAME = `mocks.json`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
-
-// const MAX_ID_LENGTH = 6;
 const MAX_COMMENTS = 4;
 
 const SumRestrict = {
@@ -55,7 +52,7 @@ const generateOffers = (count, titles, categories, sentences, comments, types, u
   Array(count).fill({}).map(() => {
     return {
       user: users[getRandomInt(0, users.length - 1)].email,
-      typeId: getRandomInt(0, types.length),
+      typeId: getRandomInt(1, types.length),
       title: titles[getRandomInt(0, titles.length - 1)],
       description: shuffle(sentences).slice(1, 5).join(` `),
       sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),

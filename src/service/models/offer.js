@@ -6,12 +6,12 @@ class Offer extends Model {}
 
 const define = (sequelize) => Offer.init({
   description: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false
   },
   picture: DataTypes.STRING,
   title: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false
   },
   sum: {

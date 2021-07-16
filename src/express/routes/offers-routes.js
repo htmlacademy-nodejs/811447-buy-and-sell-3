@@ -7,8 +7,10 @@ const {nanoid} = require(`nanoid`);
 const {ensureArray} = require(`../../utils`);
 const api = require(`../api`).getAPI();
 
-const offersRouter = new Router();
 const UPLOAD_DIR = `../upload/img/`;
+const OFFERS_PER_PAGE = 8;
+
+const offersRouter = new Router();
 
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 const storage = multer.diskStorage({
@@ -22,8 +24,17 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 offersRouter.get(`/category/:id`, async (req, res) => {
-  const categories = await api.getCategories();
-  res.render(`offers/category`, {categories});
+  let {page = 1} = req.query;
+  const {id} = req.params;
+  page = +page;
+  const limit = OFFERS_PER_PAGE;
+  const offset = (page - 1) * OFFERS_PER_PAGE;
+
+  const {count, offers} = await api.getOffers({limit, offset, comments: true});
+  const categories = await api.getCategories(true);
+
+  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+  res.render(`offers/category`, {categories, offers, page, totalPages, id, count});
 });
 
 offersRouter.get(`/add`, async (req, res) => {
@@ -39,7 +50,8 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     typeId: Number(body.action),
     description: body.comment,
     title: body[`ticket-name`],
-    categories: ensureArray(body.categories)
+    categories: ensureArray(body.categories),
+    userId: 1
   };
   try {
     await api.createOffer(offerData);
