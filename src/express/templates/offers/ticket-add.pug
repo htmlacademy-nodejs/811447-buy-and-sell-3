@@ -17,12 +17,12 @@ block content
             div(class='ticket-form__content')
               div(class='ticket-form__row')
                 div(class='form__field')
-                  input#ticket-name.js-field(type='text' name='ticket-name' required='')
+                  input#ticket-name.js-field(type='text' name='ticket-name' required='' minlength='10' maxlength='100')
                   label(for='ticket-name') Название
                   span Обязательное поле
               div(class='ticket-form__row')
                 div(class='form__field')
-                  textarea#comment-field.js-field(name='comment' cols='30' rows='10' maxlength='400' minlength='50')
+                  textarea#comment-field.js-field(name='comment' cols='30' rows='10' maxlength='1000' minlength='50')
                   label(for='comment-field') Описание
                   span Обязательное поле
               div(class='ticket-form__row')
@@ -31,7 +31,7 @@ block content
                     option(value=category.id) #{category.name}
               div(class='ticket-form__row')
                 div(class='form__field form__field--price')
-                  input#price-field.js-field.js-price(type='number' name='price' min='1' required='')
+                  input#price-field.js-field.js-price(type='number' name='price' min='100' required='')
                   label(for='price-field') Цена
                   span Обязательное поле
                 div(class='form__switch switch')
@@ -41,4 +41,5 @@ block content
                   div(class='switch__item')
                     input#sell-field.visually-hidden(type='radio' name='action' value=(2))
                     label(for='sell-field' class='switch__button') Продам
+            +errorMessage(error)
             button(class='form__button btn btn--medium js-button' type='submit' disabled='') Опубликовать

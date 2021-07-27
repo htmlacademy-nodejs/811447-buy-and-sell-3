@@ -38,8 +38,9 @@ offersRouter.get(`/category/:id`, async (req, res) => {
 });
 
 offersRouter.get(`/add`, async (req, res) => {
+  const {error} = req.query;
   const categories = await api.getCategories();
-  res.render(`offers/ticket-add`, {categories});
+  res.render(`offers/ticket-add`, {categories, error});
 });
 
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
@@ -50,24 +51,24 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     typeId: Number(body.action),
     description: body.comment,
     title: body[`ticket-name`],
-    categories: ensureArray(body.categories),
-    userId: 1
+    categories: ensureArray(body.categories)
   };
   try {
     await api.createOffer(offerData);
     res.redirect(`/my`);
   } catch (error) {
-    res.redirect(`back`);
+    res.redirect(`/offers/add?error=${encodeURIComponent(error.response.data)}`);
   }
 });
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
+  const {error} = req.query;
   const [offer, categories] = await Promise.all([
     api.getOffer(id),
     api.getCategories()
   ]);
-  res.render(`offers/ticket-edit`, {offer, categories});
+  res.render(`offers/ticket-edit`, {id, offer, categories, error});
 });
 
 offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
@@ -79,22 +80,34 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
     typeId: Number(body.action),
     description: body.comment,
     title: body[`ticket-name`],
-    categories: ensureArray(body.categories),
-    userId: 1
+    categories: ensureArray(body.categories)
   };
   try {
     await api.editOffer(id, offerData);
     res.redirect(`/my`);
   } catch (error) {
-    res.redirect(`/offers/edit/${id}`);
+    res.redirect(`/offers/edit/${id}?error=${encodeURIComponent(error.response.data)}`);
   }
 });
 
 
 offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
+  const {error} = req.query;
   const offer = await api.getOffer(id, true);
-  res.render(`offers/ticket`, {offer});
+  res.render(`offers/ticket`, {offer, id, error});
+});
+
+offersRouter.post(`/:id/comments`, async (req, res) => {
+  const {id} = req.params;
+  const {comment} = req.body;
+
+  try {
+    await api.createComment(id, {text: comment});
+    res.redirect(`/offers/${id}`);
+  } catch (error) {
+    res.redirect(`/offers/${id}?error=${encodeURIComponent(error.response.data)}`);
+  }
 });
 
 module.exports = offersRouter;
