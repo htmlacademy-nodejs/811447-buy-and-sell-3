@@ -3,7 +3,7 @@ extends layout.pug
 block content
   main.page-content
     section.sign-up
-      form(class='sign-up__form form' action='#' method='post' enctype='multipart/form-data' autocomplete='off')
+      form(class='sign-up__form form' action='/register' method='post' enctype='multipart/form-data' autocomplete='off')
         div(class='sign-up__title')
           h2 Регистрация
           a(class='sign-up__link' href='/login') Вход
@@ -31,4 +31,4 @@ block content
           label(for='user-password-again') Пароль еще раз
           span Обязательное поле
         button(class='sign-up__button btn btn--medium js-button' type='submit' disabled='') Создать аккаунт
-
+  +errorMessage(error)

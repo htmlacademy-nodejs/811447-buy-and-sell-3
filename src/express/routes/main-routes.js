@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const api = require(`../api`).getAPI();
+const upload = require(`../../service/middlewares/upload`);
 
 const OFFERS_PER_PAGE = 8;
 
@@ -25,7 +26,28 @@ mainRouter.get(`/`, async (req, res) => {
   res.render(`main`, {offers, categories, page, totalPages});
 });
 
-mainRouter.get(`/register`, (req, res) => res.render(`register`));
+mainRouter.get(`/register`, (req, res) => {
+  const {error} = req.query;
+  res.render(`register`, {error});
+});
+
+mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const userData = {
+    avatar: file.filename,
+    name: body[`user-name`],
+    email: body[`user-email`],
+    password: body[`user-password`],
+    passwordRepeated: body[`user-password-again`]
+  };
+  try {
+    await api.createUser(userData);
+    res.redirect(`/login`);
+  } catch (error) {
+    res.redirect(`/register?error=${encodeURIComponent(error.response.data)}`);
+  }
+});
+
 mainRouter.get(`/login`, (req, res) => res.render(`login`));
 
 mainRouter.get(`/search`, async (req, res) => {

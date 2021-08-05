@@ -41,11 +41,12 @@ const mockOffers = [
     "sum": 40245,
     "picture": `item12.jpg`,
     "categories": [`Животные`],
+    "userId": 1,
     "comments": [
-      {"text": `Совсем немного... Вы что?! В магазине дешевле. А сколько игр в комплекте?`, "user": `petrov@example.com`},
-      {"text": `Вы что?! В магазине дешевле.`, "user": `petrov@example.com`},
-      {"text": `Совсем немного... Вы что?! В магазине дешевле.`, "user": `petrov@example.com`},
-      {"text": `С чем связана продажа? Почему так дешёво? Продаю в связи с переездом. Отрываю от сердца. Совсем немного...`, "user": `petrov@example.com`}
+      {"text": `Совсем немного... Вы что?! В магазине дешевле. А сколько игр в комплекте?`, "userId": 2},
+      {"text": `Вы что?! В магазине дешевле.`, "userId": 2},
+      {"text": `Совсем немного... Вы что?! В магазине дешевле.`, "userId": 2},
+      {"text": `С чем связана продажа? Почему так дешёво? Продаю в связи с переездом. Отрываю от сердца. Совсем немного...`, "userId": 2}
     ]
   },
   {
@@ -55,9 +56,10 @@ const mockOffers = [
     "sum": 40536,
     "picture": `item11.jpg`,
     "categories": [`Игры`],
+    "userId": 1,
     "comments": [
-      {"text": `Оплата наличными или перевод на карту?`, "user": `petrov@example.com`},
-      {"text": `С чем связана продажа? Почему так дешёво? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`, "user": `petrov@example.com`}
+      {"text": `Оплата наличными или перевод на карту?`, "userId": 1},
+      {"text": `С чем связана продажа? Почему так дешёво? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`, "userId": 1}
     ]
   },
   {
@@ -67,8 +69,9 @@ const mockOffers = [
     "sum": 55539,
     "picture": `item11.jpg`,
     "categories": [`Игры`],
+    "userId": 1,
     "comments": [
-      {"text": `Почему в таком ужасном состоянии? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`, "user": `petrov@example.com`}
+      {"text": `Почему в таком ужасном состоянии? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`, "userId": 2}
     ]
   },
   {
@@ -78,8 +81,9 @@ const mockOffers = [
     "sum": 45253,
     "picture": `item2.jpg`,
     "categories": [`Животные`],
+    "userId": 1,
     "comments": [
-      {"text": `С чем связана продажа? Почему так дешёво? Оплата наличными или перевод на карту?`, "user": `petrov@example.com`}
+      {"text": `С чем связана продажа? Почему так дешёво? Оплата наличными или перевод на карту?`, "userId": 2}
     ]
   },
   {
@@ -89,9 +93,10 @@ const mockOffers = [
     "sum": 82467,
     "picture": `item11.jpg`,
     "categories": [`Животные`],
+    "userId": 1,
     "comments": [
-      {"text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`, "user": `petrov@example.com`},
-      {"text": `Неплохо, но дорого. А сколько игр в комплекте? Продаю в связи с переездом. Отрываю от сердца.`, "user": `petrov@example.com`}
+      {"text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`, "userId": 2},
+      {"text": `Неплохо, но дорого. А сколько игр в комплекте? Продаю в связи с переездом. Отрываю от сердца.`, "userId": 2}
     ]
   }];
 
@@ -141,6 +146,7 @@ describe(`API creates an offer if data is valid`, () => {
     description: `Дам погладить котика. Дорого. Не гербалайф. Дам погладить котика. Дорого. Не гербалайф Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     typeId: 2,
+    userId: 1,
     sum: 100500
   };
 
@@ -169,6 +175,7 @@ describe(`API refuses to create an offer if data is invalid`, () => {
     description: `Дам погладить котика. Дорого. Не гербалайф. Дам погладить котика. Дорого. Не гербалайф Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     typeId: 2,
+    userId: 1,
     sum: 100500
   };
   let app;
@@ -197,6 +204,7 @@ describe(`API changes existent offer`, () => {
     description: `Дам погладить котика. Дорого. Не гербалайф. Дам погладить котика. Дорого. Не гербалайф Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     typeId: 2,
+    userId: 1,
     sum: 100500
   };
   let app;
@@ -226,6 +234,7 @@ test(`API returns status code 404 when trying to change non-existent offer`, asy
     description: `Дам погладить котика. Дорого. Не гербалайф. Дам погладить котика. Дорого. Не гербалайф Дам погладить котика. Дорого. Не гербалайф`,
     picture: `объявления`,
     typeId: 1,
+    userId: 1,
     sum: 404
   };
 
@@ -244,7 +253,8 @@ test(`API returns status code 400 when trying to change an offer with invalid da
     title: `невалидный`,
     description: `объект`,
     picture: `объявления`,
-    typeId: `нет поля sum`
+    typeId: `нет поля sum`,
+    userId: 1,
   };
 
   return request(app)
@@ -262,6 +272,7 @@ test(`When field type is wrong response code is 400`, async () => {
     description: `Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     typeId: 2,
+    userId: 1,
     sum: 100500
   };
 
@@ -288,6 +299,7 @@ test(`When field value is wrong response code is 400`, async () => {
     description: `Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     typeId: 2,
+    userId: 1,
     sum: 100500
   };
 
