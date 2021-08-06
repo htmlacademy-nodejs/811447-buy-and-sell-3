@@ -23,11 +23,11 @@ block content
           label(for='user-email') Эл. почта
           span Обязательное поле
         div(class='form__field sign-up__field')
-          input#user-password.js-field(type='password' name='user-password' required='')
+          input#user-password.js-field(type='password' name='user-password' required='' minlength='6')
           label(for='user-password') Пароль
           span Обязательное поле
         div(class='form__field sign-up__field')
-          input#user-password-again.js-field(type='password' name='user-password-again' required='')
+          input#user-password-again.js-field(type='password' name='user-password-again' required='' minlength='6')
           label(for='user-password-again') Пароль еще раз
           span Обязательное поле
         button(class='sign-up__button btn btn--medium js-button' type='submit' disabled='') Создать аккаунт
