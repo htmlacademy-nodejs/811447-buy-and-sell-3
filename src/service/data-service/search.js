@@ -5,6 +5,7 @@ const Aliase = require(`../models/aliase`);
 class SearchService {
   constructor(sequelize) {
     this._Offer = sequelize.models.Offer;
+    this._User = sequelize.models.User;
   }
 
   async findAll(searchText) {
@@ -14,7 +15,17 @@ class SearchService {
           [Op.substring]: searchText
         }
       },
-      include: [Aliase.CATEGORIES, Aliase.TYPE],
+      include: [
+        Aliase.CATEGORIES,
+        Aliase.TYPE,
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ],
     });
     return offers.map((offer) => offer.get());
   }

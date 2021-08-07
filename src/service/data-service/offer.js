@@ -7,6 +7,7 @@ class OfferService {
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
     this._Type = sequelize.models.Type;
+    this._User = sequelize.models.User;
   }
 
   async create(offerData) {
@@ -23,10 +24,32 @@ class OfferService {
   }
 
   async findAll(needComments) {
-    const include = [Aliase.CATEGORIES, Aliase.TYPE];
+    const include = [
+      Aliase.CATEGORIES,
+      Aliase.TYPE,
+      {
+        model: this._User,
+        as: Aliase.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ];
 
     if (needComments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Aliase.USER,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
     const offers = await this._Offer.findAll({
       attributes: [
