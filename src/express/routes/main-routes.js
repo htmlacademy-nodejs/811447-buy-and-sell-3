@@ -9,6 +9,7 @@ const OFFERS_PER_PAGE = 8;
 const mainRouter = new Router();
 
 mainRouter.get(`/`, async (req, res) => {
+  const {user} = req.session;
   let {page = 1} = req.query;
   page = +page;
   const limit = OFFERS_PER_PAGE;
@@ -23,7 +24,7 @@ mainRouter.get(`/`, async (req, res) => {
   ]);
 
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-  res.render(`main`, {offers, categories, page, totalPages});
+  res.render(`main`, {offers, categories, page, totalPages, user});
 });
 
 mainRouter.get(`/register`, (req, res) => {
@@ -49,18 +50,39 @@ mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-mainRouter.get(`/login`, (req, res) => res.render(`login`));
+mainRouter.get(`/login`, (req, res) => {
+  const {error} = req.query;
+  res.render(`login`, {error});
+});
+
+mainRouter.post(`/login`, async (req, res) => {
+  try {
+    const user = await api.auth(req.body[`user-email`], req.body[`user-password`]);
+    req.session.user = user;
+    res.redirect(`/`);
+  } catch (error) {
+    res.redirect(`/login?error=${encodeURIComponent(error.response.data)}`);
+  }
+});
+
+mainRouter.get(`/logout`, (req, res) => {
+  delete req.session.user;
+  res.redirect(`/`);
+});
 
 mainRouter.get(`/search`, async (req, res) => {
+  const {user} = req.session;
   try {
     const {search} = req.query;
     const results = await api.search(search);
     res.render(`search`, {
-      results
+      results,
+      user
     });
   } catch (error) {
     res.render(`search`, {
-      results: []
+      results: [],
+      user
     });
   }
 });

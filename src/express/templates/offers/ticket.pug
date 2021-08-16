@@ -43,7 +43,9 @@ block content
         div(class='ticket__comments')
           h2(class='ticket__subtitle') Комментарии
           div(class='ticket__comment-form')
-            form.form.comment-form(action='#' method='post')
+            form.form.comment-form(action=`/offers/${id}/comments` method='post' enctype="application/x-www-form-urlencoded"
+             autocomplete="off")
+              input(type="hidden" name="_csrf" value=csrfToken)
               div(class='comment-form__header')
                 a(href='#' class='comment-form__avatar avatar')
                   img(src='/img/avatar.jpg' srcset='/img/avatar@2x.jpg 2x' alt='Аватар пользователя')

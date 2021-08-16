@@ -7,6 +7,7 @@ block content
         h1(class='ticket-form__title') Редактировать публикацию
         div(class='ticket-form__tile')
           form(class='ticket-form__form form' action=`/offers/edit/${offer.id}` method='post' enctype='multipart/form-data' autocomplete='off')
+            input(type="hidden" name="_csrf" value=csrfToken)
             div(class='ticket-form__avatar-container js-preview-container uploaded')
               div(class='ticket-form__avatar js-preview')
                 img(src=`/img/${offer.picture}` alt=offer.title)
