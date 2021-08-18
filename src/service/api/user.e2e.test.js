@@ -7,6 +7,7 @@ const user = require(`./user`);
 const initDB = require(`../lib/init-db`);
 const DataService = require(`../data-service/user`);
 const {HttpCode} = require(`../../constants`);
+const passwordUtils = require(`../lib/password`);
 
 const mockCategories = [
   `Животные`,
@@ -20,13 +21,13 @@ const mockUsers = [
   {
     name: `Иван Иванов`,
     email: `ivanov@example.com`,
-    passwordHash: `ivanov`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
     avatar: `avatar01.jpg`
   },
   {
     name: `Пётр Петров`,
     email: `petrov@example.com`,
-    passwordHash: `petrov`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
     avatar: `avatar02.jpg`
   }
 ];
